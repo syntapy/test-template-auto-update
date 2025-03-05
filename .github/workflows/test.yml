@@ -1,0 +1,22 @@
+name: test
+
+permissions: read-all
+on: [push]
+
+env:
+  NODE_VERSION: 22
+  DISPLAY: ""
+
+jobs:
+  e2e:
+    if: false
+    uses: ./.github/workflows/setup.yml
+    secrets: inherit
+    with:
+      command: e2e
+  lighthouse_audit:
+    if: false
+    uses: ./.github/workflows/setup.yml
+    secrets: inherit
+    with:
+      command: audit

@@ -1,0 +1,56 @@
+#! /bin/sh
+
+source ./docker/.env
+
+CMD_ARG="$@"
+
+ONLY_SHOW=0
+
+USAGE='Usage:\n\n'
+USAGE+='  -h          Show help\n'
+USAGE+='  -s          Do not run, only show entrypoint and command\n\n'
+USAGE+='  -e ENTRY    Entrypoint for container\n'
+USAGE+='  -c COMMAND  Command to run\n\n'
+USAGE+='Example Usage:\n\n'
+USAGE+='  ./bin/up_app -e "bash -c" -c "ls -l"\n\n'
+
+while getopts "hse:c:" opt; do
+    case ${opt} in
+        h)
+            printf "$USAGE"
+            exit 0
+            ;;
+        s)
+            ONLY_SHOW=1
+            ;;
+        e)
+            ENTRY=${OPTARG}
+            ;;
+        c)
+            CMD=${OPTARG}
+            ;;
+        ?)
+            printf "$USAGE"
+            exit 1
+            ;;
+    esac
+done
+
+
+if [ -n "$ENTRY" ]; then
+    echo "Overriding entrypoint with arg"
+    APP_ENTRY=$ENTRY
+else
+    APP_ENTRY="npm"
+fi
+
+if [ -n "$CMD" ]; then
+    echo "Overriding command with arg"
+    APP_COMMAND=$CMD
+fi
+
+if [ "$ONLY_SHOW" -eq 1 ]; then
+    echo "Entrypoint: $APP_ENTRY"
+    echo "Command:    $APP_COMMAND"
+    exit 0
+fi
